@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FitssMain.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">Fitss experiment</a> &gt; <a href="index.source.html" class="el_package">default</a> &gt; <span class="el_source">FitssMain.java</span></div><h1>FitssMain.java</h1><pre class="source lang-java linenums">import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import static java.lang.Math.pow;
+import java.util.HashMap;
+import javax.swing.*;
+import java.awt.Point;
+import java.awt.geom.Point2D;
+import java.util.Vector;
+
+<span class="nc" id="L11">public class FitssMain {</span>
+    /**
+     * @param args the command line arguments
+     * @throws java.lang.InterruptedException
+    */
+    private JFrame frame;
+    private JButton button1;
+<span class="nc" id="L18">    private int cntD = 0, cntW = 0, cnt = 0, st = 0;</span>
+    static private double[] time, id, tm;
+<span class="nc" id="L20">    private final int[] D = {100, 300, 600};</span>
+<span class="nc" id="L21">    private final int[] W = {150, 90, 50};</span>
+    static FitssMain fitss;
+<span class="nc" id="L23">    private final double pxToCm = 264583333e-2;</span>
+  
+    public void start() {
+<span class="nc" id="L26">        frame = new JFrame(&quot;2.2&quot;);</span>
+<span class="nc" id="L27">        frame.setLayout(null);</span>
+<span class="nc" id="L28">        frame.setExtendedState(JFrame.MAXIMIZED_BOTH); </span>
+<span class="nc" id="L29">        frame.setVisible(true);</span>
+<span class="nc" id="L30">        button1 = new JButton();</span>
+<span class="nc" id="L31">        button1.setBounds(900, 0, 150, 1200);</span>
+<span class="nc" id="L32">        button1.setBackground(new Color(100, 0, 100));</span>
+<span class="nc" id="L33">        button1.setVisible(true);</span>
+<span class="nc" id="L34">        frame.add(button1);</span>
+<span class="nc" id="L35">        JLabel label = new JLabel(&quot;Fitts' Experiment&quot;);</span>
+<span class="nc" id="L36">        label.setBounds(0, 100, 250, 100);</span>
+<span class="nc" id="L37">        label.setFont(new Font(&quot;Verdana&quot;, Font.PLAIN,18));</span>
+<span class="nc" id="L38">        frame.add(label);</span>
+<span class="nc" id="L39">        JLabel counter = new JLabel();</span>
+<span class="nc" id="L40">        counter.setBounds(0, 125, 300, 300);</span>
+<span class="nc" id="L41">        counter.setFont(new Font(&quot;Verdana&quot;, Font.PLAIN,18));</span>
+<span class="nc" id="L42">        frame.add(counter);</span>
+<span class="nc" id="L43">        button1.addActionListener(new ActionListener() {</span>
+            @Override
+            public void actionPerformed(ActionEvent e) {
+<span class="nc bnc" id="L46" title="All 2 branches missed.">                if(cnt &lt;= 90) {</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">                    if(cnt == 0) {</span>
+<span class="nc" id="L48">                        time[st] = System.currentTimeMillis();</span>
+                    }
+<span class="nc bnc" id="L50" title="All 2 branches missed.">                    else if(cnt % 10 == 0) {</span>
+<span class="nc" id="L51">                        st++;</span>
+<span class="nc" id="L52">                        time[st] = System.currentTimeMillis();</span>
+<span class="nc" id="L53">                        time[st - 1] = time[st] - time[st - 1];</span>
+<span class="nc" id="L54">                        double cmD = D[cntD] * pxToCm * 2;</span>
+<span class="nc" id="L55">                        double cmW = W[cntW] * pxToCm;</span>
+<span class="nc" id="L56">                        double ID = Math.log(2.0 * cmD  / cmW) / Math.log(2.0);</span>
+<span class="nc" id="L57">                        tm[st -1] = time[st - 1] / 1000.0;</span>
+<span class="nc" id="L58">                        id[st - 1] = ID;</span>
+<span class="nc" id="L59">                        System.out.println(&quot;State: &quot; + st + &quot; Actual time: &quot; + tm[st - 1] + &quot; ID: &quot; + id[st - 1]);</span>
+<span class="nc" id="L60">                        cntD++;</span>
+<span class="nc" id="L61">                        cntD %= 3;</span>
+                    }
+<span class="nc bnc" id="L63" title="All 6 branches missed.">                    if(cnt % 30 == 0 &amp;&amp; cnt != 0 &amp;&amp; cntW &lt; 2) {</span>
+<span class="nc" id="L64">                        cntW++;</span>
+                    }
+<span class="nc" id="L66">                    switchButtons();</span>
+<span class="nc" id="L67">                    cnt++;</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">                    if(cnt &lt;= 90) {</span>
+<span class="nc" id="L69">                        counter.setText(&quot;Remaining clicks: &quot; + Integer.toString(90 - cnt));</span>
+                    }
+                }
+<span class="nc bnc" id="L72" title="All 2 branches missed.">                else if(cnt &gt; 90)</span>
+<span class="nc" id="L73">                    constructTable();</span>
+<span class="nc bnc" id="L74" title="All 2 branches missed.">                if(cnt == 90)</span>
+<span class="nc" id="L75">                    counter.setText(&quot;Click to show results: Actual time and ID calculated&quot;);</span>
+<span class="nc" id="L76">            }</span>
+        });
+<span class="nc" id="L78">    }</span>
+    public void switchButtons () {
+<span class="nc" id="L80">        button1.setBounds((int) (1000 + pow(-1, cnt) * D[cntD]), 0, W[cntW], 1200);</span>
+<span class="nc" id="L81">    }</span>
+    
+    public void constructTable() {
+<span class="nc" id="L84">        String[] colNames = {&quot;State&quot;, &quot;Actual time&quot;, &quot;ID&quot;};</span>
+<span class="nc" id="L85">        String rowData[][] = new String[9][3];</span>
+<span class="nc bnc" id="L86" title="All 2 branches missed.">        for(int i = 0; i &lt; 9; i++) {</span>
+<span class="nc" id="L87">            rowData[i][0] = Integer.toString(i + 1);</span>
+<span class="nc" id="L88">            rowData[i][1] = Double.toString(tm[i]);</span>
+<span class="nc" id="L89">            rowData[i][2] = Double.toString(id[i]);</span>
+        }
+<span class="nc" id="L91">        JTable table = new JTable(rowData, colNames);</span>
+<span class="nc" id="L92">        frame.add(table);</span>
+<span class="nc" id="L93">        table.setVisible(true);</span>
+<span class="nc" id="L94">        table.setBounds(10, 400, 700, 1000);</span>
+<span class="nc" id="L95">        table.setFont(new Font(&quot;Verdana&quot;, Font.PLAIN,18));</span>
+<span class="nc" id="L96">    }</span>
+    
+    public static void main(String[] args) throws InterruptedException {
+<span class="nc" id="L99">        fitss = new FitssMain();</span>
+<span class="nc" id="L100">        time = new double[12];</span>
+<span class="nc" id="L101">        tm = new double[12];</span>
+<span class="nc" id="L102">        id = new double[12];</span>
+<span class="nc" id="L103">        fitss.start();</span>
+<span class="nc" id="L104">    }</span>
+}
+       
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.8.202204050719</span></div></body></html>
